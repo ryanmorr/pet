@@ -2,7 +2,7 @@
  * Common variables
  */
 const doc = window.document;
-const tokenRe = /\{([^}]+)\}/g;
+const tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
 const escapeQuoteRe = /\\"/g;
 const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 

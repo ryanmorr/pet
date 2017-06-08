@@ -8059,7 +8059,7 @@ Library.prototype.test = function(obj, type) {
  * Common variables
  */
 var doc = window.document;
-var tokenRe = /\{([^}]+)\}/g;
+var tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
 var escapeQuoteRe = /\\"/g;
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
