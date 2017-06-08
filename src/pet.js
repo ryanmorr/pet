@@ -2,7 +2,6 @@
  * Common variables
  */
 const doc = window.document;
-const trimQuoteRe = /^['"]|['"]$/g;
 const tokenRe = /\{([^}]+)\}/g;
 const escapeQuoteRe = /\\"/g;
 const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -64,7 +63,7 @@ function addElement(elements, el) {
 function update(elements) {
     for (let i = 0, len = elements.length; i < len; i++) {
         const el = elements[i];
-        const tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
+        const tpl = window.getComputedStyle(el, ':before').getPropertyValue('content').slice(1, -1);
         if (tpl) {
             empty(el);
             const html = interpolate(tpl, el.dataset);
@@ -85,7 +84,7 @@ function update(elements) {
  * @api private
  */
 function interpolate(tpl, values) {
-    return tpl.replace(trimQuoteRe, '').replace(escapeQuoteRe, '"').replace(tokenRe, (all, key) => {
+    return tpl.replace(escapeQuoteRe, '"').replace(tokenRe, (all, key) => {
         return values[key] || '';
     });
 }

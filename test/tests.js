@@ -8059,7 +8059,6 @@ Library.prototype.test = function(obj, type) {
  * Common variables
  */
 var doc = window.document;
-var trimQuoteRe = /^['"]|['"]$/g;
 var tokenRe = /\{([^}]+)\}/g;
 var escapeQuoteRe = /\\"/g;
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -8121,7 +8120,7 @@ function addElement(elements, el) {
 function update(elements) {
     for (var i = 0, len = elements.length; i < len; i++) {
         var el = elements[i];
-        var tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
+        var tpl = window.getComputedStyle(el, ':before').getPropertyValue('content').slice(1, -1);
         if (tpl) {
             empty(el);
             var html = interpolate(tpl, el.dataset);
@@ -8142,7 +8141,7 @@ function update(elements) {
  * @api private
  */
 function interpolate(tpl, values) {
-    return tpl.replace(trimQuoteRe, '').replace(escapeQuoteRe, '"').replace(tokenRe, function (all, key) {
+    return tpl.replace(escapeQuoteRe, '"').replace(tokenRe, function (all, key) {
         return values[key] || '';
     });
 }
