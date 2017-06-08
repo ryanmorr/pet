@@ -4,6 +4,7 @@
 const doc = window.document;
 const tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
 const escapeQuoteRe = /\\"/g;
+const supportsTemplate = 'content' in doc.createElement('template');
 const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 /**
@@ -98,6 +99,11 @@ function interpolate(tpl, values) {
  * @api private
  */
 function parseHTML(html) {
+    if (supportsTemplate) {
+        const template = doc.createElement('template');
+        template.innerHTML = html;
+        return doc.importNode(template.content, true);
+    }
     const fragment = doc.createDocumentFragment();
     const div = doc.createElement('div');
     div.innerHTML = html;

@@ -8061,6 +8061,7 @@ Library.prototype.test = function(obj, type) {
 var doc = window.document;
 var tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
 var escapeQuoteRe = /\\"/g;
+var supportsTemplate = 'content' in doc.createElement('template');
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 /**
@@ -8155,6 +8156,11 @@ function interpolate(tpl, values) {
  * @api private
  */
 function parseHTML(html) {
+    if (supportsTemplate) {
+        var template = doc.createElement('template');
+        template.innerHTML = html;
+        return doc.importNode(template.content, true);
+    }
     var fragment = doc.createDocumentFragment();
     var div = doc.createElement('div');
     div.innerHTML = html;
