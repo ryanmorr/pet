@@ -12,7 +12,7 @@ const MutationObserver = window.MutationObserver || window.WebKitMutationObserve
  * collects any `pet` elements that have
  * been inserted into the DOM or had
  * data attributes changed so that the
- * template can be rendered
+ * template can be rendered/updated
  *
  * @param {Array} mutations
  * @api private
@@ -53,29 +53,41 @@ function addElement(elements, el) {
 }
 
 /**
- * For each element, retrieve the template
- * contained in the  `content` property of
- * the `:before` pseudo-element, interpolate
- * the data attributes and append to element
+ * Schedule an animation frame to
+ * update each element in the array
  *
  * @param {Array} elements
  * @api private
  */
 function update(elements) {
-    for (let i = 0, len = elements.length; i < len; i++) {
-        const el = elements[i];
-        const tpl = window.getComputedStyle(el, ':before').getPropertyValue('content').slice(1, -1);
-        if (tpl) {
-            empty(el);
-            const html = interpolate(tpl, el.dataset);
-            const frag = parseHTML(html);
-            el.appendChild(frag);
+    requestAnimationFrame(() => {
+        for (let i = 0, len = elements.length; i < len; i++) {
+            updateElement(elements[i]);
         }
+    });
+}
+
+/**
+ * Retrieve the template contained in the
+ * `content` property of the `:before`
+ * pseudo-element, interpolate the data
+ * attributes and append to element
+ *
+ * @param {Element} el
+ * @api private
+ */
+function updateElement(el) {
+    const tpl = window.getComputedStyle(el, ':before').getPropertyValue('content').slice(1, -1);
+    if (tpl) {
+        empty(el);
+        const html = interpolate(tpl, el.dataset);
+        const frag = parseHTML(html);
+        el.appendChild(frag);
     }
 }
 
 /**
- * supplant the placeholders of a template
+ * Supplant the placeholders of a template
  * with the value of the matching key in
  * an object literal
  *

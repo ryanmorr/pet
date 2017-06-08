@@ -8069,7 +8069,7 @@ var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
  * collects any `pet` elements that have
  * been inserted into the DOM or had
  * data attributes changed so that the
- * template can be rendered
+ * template can be rendered/updated
  *
  * @param {Array} mutations
  * @api private
@@ -8110,29 +8110,41 @@ function addElement(elements, el) {
 }
 
 /**
- * For each element, retrieve the template
- * contained in the  `content` property of
- * the `:before` pseudo-element, interpolate
- * the data attributes and append to element
+ * Schedule an animation frame to
+ * update each element in the array
  *
  * @param {Array} elements
  * @api private
  */
 function update(elements) {
-    for (var i = 0, len = elements.length; i < len; i++) {
-        var el = elements[i];
-        var tpl = window.getComputedStyle(el, ':before').getPropertyValue('content').slice(1, -1);
-        if (tpl) {
-            empty(el);
-            var html = interpolate(tpl, el.dataset);
-            var frag = parseHTML(html);
-            el.appendChild(frag);
+    requestAnimationFrame(function () {
+        for (var i = 0, len = elements.length; i < len; i++) {
+            updateElement(elements[i]);
         }
+    });
+}
+
+/**
+ * Retrieve the template contained in the
+ * `content` property of the `:before`
+ * pseudo-element, interpolate the data
+ * attributes and append to element
+ *
+ * @param {Element} el
+ * @api private
+ */
+function updateElement(el) {
+    var tpl = window.getComputedStyle(el, ':before').getPropertyValue('content').slice(1, -1);
+    if (tpl) {
+        empty(el);
+        var html = interpolate(tpl, el.dataset);
+        var frag = parseHTML(html);
+        el.appendChild(frag);
     }
 }
 
 /**
- * supplant the placeholders of a template
+ * Supplant the placeholders of a template
  * with the value of the matching key in
  * an object literal
  *
@@ -8234,21 +8246,27 @@ function observe(el, config, fn) {
 }
 
 describe('pet', function () {
-    it('supports HTML injection on page load', function () {
+    it('supports HTML injection on page load', function (done) {
         var foo = document.querySelector('#foo');
-        var el = foo.firstChild;
-        (0, _chai.expect)(el).to.not.equal(null);
-        (0, _chai.expect)(el.tagName.toLowerCase()).to.equal('em');
-        (0, _chai.expect)(el.textContent).to.equal('foo');
+        setTimeout(function () {
+            var el = foo.firstChild;
+            (0, _chai.expect)(el).to.not.equal(null);
+            (0, _chai.expect)(el.tagName.toLowerCase()).to.equal('em');
+            (0, _chai.expect)(el.textContent).to.equal('foo');
+            done();
+        }, 100);
     });
 
-    it('supports HTML interpolation using data attributes', function () {
+    it('supports HTML interpolation using data attributes', function (done) {
         var bar = document.querySelector('#bar');
-        var el = bar.firstChild;
-        (0, _chai.expect)(el).to.not.equal(null);
-        (0, _chai.expect)(el.tagName.toLowerCase()).to.equal('strong');
-        (0, _chai.expect)(el.id).to.equal('name');
-        (0, _chai.expect)(el.textContent).to.equal('John Doe');
+        setTimeout(function () {
+            var el = bar.firstChild;
+            (0, _chai.expect)(el).to.not.equal(null);
+            (0, _chai.expect)(el.tagName.toLowerCase()).to.equal('strong');
+            (0, _chai.expect)(el.id).to.equal('name');
+            (0, _chai.expect)(el.textContent).to.equal('John Doe');
+            done();
+        }, 100);
     });
 
     it('supports HTML injection on dynamically inserted elements', function (done) {
