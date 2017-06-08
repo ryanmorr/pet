@@ -4,8 +4,20 @@
 	<meta charset="utf-8">
 	<title>Unit Tests</title>
 	<link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+    <style>
+        #foo::before {
+            content: '<em>foo</em>';
+        }
+
+        #bar::before {
+            content: '<strong id="{id}">{firstName} {lastName}</strong>';
+        }
+    </style>
 </head>
 <body>
+    <div id="foo" class="pet"></div>
+    <div id="bar" class="pet" data-id="name" data-first-name="John" data-last-name="Doe"></div>
+
 	<div id="mocha"></div>
 	<script src="../node_modules/mocha/mocha.js"></script>
 	<script src="../node_modules/chai/chai.js"></script>
