@@ -8245,7 +8245,8 @@ var tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
  * @api private
  */
 function getTemplate(el) {
-    return window.getComputedStyle(el, ':before').getPropertyValue('content').slice(1, -1).replace(escapeQuoteRe, '"');
+    var tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
+    return tpl ? tpl.slice(1, -1).replace(escapeQuoteRe, '"') : null;
 }
 
 /**
