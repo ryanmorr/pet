@@ -6,7 +6,7 @@ import patch from './patch';
 /**
  * Common variables
  */
-const escapeQuoteRe = /\\"/g;
+const escapeQuoteRe = /\\['"]/g;
 const tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
 
 /**

@@ -8228,9 +8228,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * Common variables
  */
-var escapeQuoteRe = /\\"/g; /**
-                             * Import dependencies
-                             */
+var escapeQuoteRe = /\\['"]/g; /**
+                                * Import dependencies
+                                */
 
 var tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
 
