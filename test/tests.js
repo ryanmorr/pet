@@ -8129,7 +8129,70 @@ observer.observe(document.body, {
     subtree: true
 });
 
-},{"./update":42,"./util":43}],41:[function(require,module,exports){
+},{"./update":43,"./util":44}],41:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.patch = patch;
+/**
+ * Patch a source node to match
+ * another node
+ *
+ * @param {Node} node
+ * @param {Node} newNode
+ * @api private
+ */
+function patch(node, newNode) {
+    if (node.nodeType !== newNode.nodeType || node.nodeName !== newNode.nodeName) {
+        node.parentNode.replaceChild(newNode.cloneNode(true), node);
+        return;
+    }
+    if (newNode.nodeType === 3) {
+        var data = newNode.data;
+        if (node.data !== data) {
+            node.data = data;
+        }
+        return;
+    }
+    var childNodes = node.childNodes;
+    var newChildNodes = newNode.childNodes;
+    for (var i = Math.min(childNodes.length, newChildNodes.length) - 1; i >= 0; i--) {
+        patch(childNodes[i], newChildNodes[i]);
+    }
+    if (!node.isEqualNode(newNode)) {
+        var nodeAttrs = node.attributes;
+        var newNodeAttrs = newNode.attributes;
+        if (childNodes.length > newChildNodes.length) {
+            for (var _i = childNodes.length - 1; _i >= newChildNodes.length; _i--) {
+                node.removeChild(childNodes[_i]);
+            }
+        } else if (childNodes.length < newChildNodes.length) {
+            var frag = document.createDocumentFragment();
+            for (var _i2 = childNodes.length; _i2 < newChildNodes.length; _i2++) {
+                frag.appendChild(newChildNodes[_i2].cloneNode(true));
+            }
+            node.appendChild(frag);
+        }
+        for (var _i3 = nodeAttrs.length - 1; _i3 >= 0; _i3--) {
+            var name = nodeAttrs[_i3].name;
+            if (!newNode.hasAttribute(name)) {
+                node.removeAttribute(name);
+            }
+        }
+        for (var _i4 = newNodeAttrs.length - 1; _i4 >= 0; _i4--) {
+            var attr = newNodeAttrs[_i4];
+            var _name = attr.name;
+            var value = attr.value;
+            if (node.getAttribute(_name) !== value) {
+                node.setAttribute(_name, value);
+            }
+        }
+    }
+}
+
+},{}],42:[function(require,module,exports){
 'use strict';
 
 require('./observer');
@@ -8149,13 +8212,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 (0, _update2.default)(document.querySelectorAll('.pet'));
 
-},{"./observer":40,"./update":42}],42:[function(require,module,exports){
+},{"./observer":40,"./update":43}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.default = update;
+
+var _patch = require('./patch');
 
 var _util = require('./util');
 
@@ -8166,25 +8231,26 @@ var _util = require('./util');
  * @param {Array} elements
  * @api private
  */
+/**
+ * Import dependencies
+ */
 function update(elements) {
     requestAnimationFrame(function () {
         for (var i = 0, len = elements.length; i < len; i++) {
             var el = elements[i];
             var tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
             if (tpl) {
-                (0, _util.empty)(el);
-                var html = (0, _util.interpolate)(tpl.slice(1, -1), el.dataset);
-                var frag = (0, _util.parseHTML)(html);
-                el.appendChild(frag);
+                var frag = (0, _util.parseHTML)((0, _util.interpolate)(tpl.slice(1, -1), el.dataset));
+                var newElement = el.cloneNode();
+                newElement.appendChild(frag);
+                (0, _patch.patch)(el, newElement);
             }
         }
     });
-} /**
-   * Import dependencies
-   */
+}
 module.exports = exports['default'];
 
-},{"./util":43}],43:[function(require,module,exports){
+},{"./patch":41,"./util":44}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8268,7 +8334,7 @@ function empty(el) {
     }
 }
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 'use strict';
 
 var _chai = require('chai');
@@ -8340,4 +8406,4 @@ describe('pet', function () {
     });
 });
 
-},{"../../src/pet":41,"chai":4}]},{},[44]);
+},{"../../src/pet":42,"chai":4}]},{},[45]);

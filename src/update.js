@@ -1,7 +1,8 @@
 /**
  * Import dependencies
  */
-import { interpolate, parseHTML, empty } from './util';
+import { patch } from './patch';
+import { interpolate, parseHTML } from './util';
 
 /**
  * Schedule an animation frame to
@@ -16,10 +17,10 @@ export default function update(elements) {
             const el = elements[i];
             const tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
             if (tpl) {
-                empty(el);
-                const html = interpolate(tpl.slice(1, -1), el.dataset);
-                const frag = parseHTML(html);
-                el.appendChild(frag);
+                const frag = parseHTML(interpolate(tpl.slice(1, -1), el.dataset));
+                const newElement = el.cloneNode();
+                newElement.appendChild(frag);
+                patch(el, newElement);
             }
         }
     });
