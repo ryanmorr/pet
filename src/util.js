@@ -5,22 +5,6 @@ const escapeQuoteRe = /\\"/g;
 const tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
 
 /**
- * Supplant the placeholders of a template
- * with the value of the matching key in
- * an object literal
- *
- * @param {String} tpl
- * @param {Object} values
- * @return {String}
- * @api private
- */
-function interpolate(tpl, values) {
-    return tpl.replace(tokenRe, (all, key) => {
-        return values[key] || '';
-    });
-}
-
-/**
  * Get the template for an element
  * held within the `:before` pseudo-
  * element
@@ -46,8 +30,9 @@ export function getTemplate(el) {
  * @api private
  */
 export function parseTemplate(el, tpl) {
+    const data = el.dataset;
     const newElement = el.cloneNode();
-    newElement.innerHTML = interpolate(tpl, el.dataset);
+    newElement.innerHTML = tpl.replace(tokenRe, (all, key) => data[key] || '');
     return newElement;
 }
 

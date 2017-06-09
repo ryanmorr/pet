@@ -8256,7 +8256,7 @@ module.exports = exports['default'];
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.getTemplate = getTemplate;
 exports.parseTemplate = parseTemplate;
@@ -8266,22 +8266,6 @@ exports.startsWith = startsWith;
  */
 var escapeQuoteRe = /\\"/g;
 var tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
-
-/**
- * Supplant the placeholders of a template
- * with the value of the matching key in
- * an object literal
- *
- * @param {String} tpl
- * @param {Object} values
- * @return {String}
- * @api private
- */
-function interpolate(tpl, values) {
-    return tpl.replace(tokenRe, function (all, key) {
-        return values[key] || '';
-    });
-}
 
 /**
  * Get the template for an element
@@ -8294,8 +8278,8 @@ function interpolate(tpl, values) {
  * @api private
  */
 function getTemplate(el) {
-    var tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
-    return tpl.slice(1, -1).replace(escapeQuoteRe, '"');
+  var tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
+  return tpl.slice(1, -1).replace(escapeQuoteRe, '"');
 }
 
 /**
@@ -8309,9 +8293,12 @@ function getTemplate(el) {
  * @api private
  */
 function parseTemplate(el, tpl) {
-    var newElement = el.cloneNode();
-    newElement.innerHTML = interpolate(tpl, el.dataset);
-    return newElement;
+  var data = el.dataset;
+  var newElement = el.cloneNode();
+  newElement.innerHTML = tpl.replace(tokenRe, function (all, key) {
+    return data[key] || '';
+  });
+  return newElement;
 }
 
 /**
@@ -8324,10 +8311,10 @@ function parseTemplate(el, tpl) {
  * @api private
  */
 function startsWith(str, prefix) {
-    if (str.startsWith) {
-        return str.startsWith(prefix);
-    }
-    return str.indexOf(prefix, 0) === 0;
+  if (str.startsWith) {
+    return str.startsWith(prefix);
+  }
+  return str.indexOf(prefix, 0) === 0;
 }
 
 },{}],45:[function(require,module,exports){
