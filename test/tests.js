@@ -8121,7 +8121,7 @@ function addElement(elements, el) {
  * inserted elements and changed attributes
  */
 var observer = new MutationObserver(onChange);
-observer.observe(document.body, {
+observer.observe(document.documentElement, {
     childList: true,
     attributes: true,
     subtree: true
