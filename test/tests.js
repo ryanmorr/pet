@@ -8135,7 +8135,7 @@ observer.observe(document.body, {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.patch = patch;
+exports.default = patch;
 /**
  * Patch a source node to match
  * another node
@@ -8191,6 +8191,7 @@ function patch(node, newNode) {
         }
     }
 }
+module.exports = exports["default"];
 
 },{}],42:[function(require,module,exports){
 'use strict';
@@ -8222,7 +8223,11 @@ exports.default = update;
 
 var _patch = require('./patch');
 
+var _patch2 = _interopRequireDefault(_patch);
+
 var _util = require('./util');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Schedule an animation frame to
@@ -8238,12 +8243,9 @@ function update(elements) {
     requestAnimationFrame(function () {
         for (var i = 0, len = elements.length; i < len; i++) {
             var el = elements[i];
-            var tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
+            var tpl = (0, _util.getTemplate)(el);
             if (tpl) {
-                var frag = (0, _util.parseHTML)((0, _util.interpolate)(tpl.slice(1, -1), el.dataset));
-                var newElement = el.cloneNode();
-                newElement.appendChild(frag);
-                (0, _patch.patch)(el, newElement);
+                (0, _patch2.default)(el, (0, _util.parseTemplate)(el, tpl));
             }
         }
     });
@@ -8256,16 +8258,14 @@ module.exports = exports['default'];
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.interpolate = interpolate;
-exports.parseHTML = parseHTML;
+exports.getTemplate = getTemplate;
+exports.parseTemplate = parseTemplate;
 exports.startsWith = startsWith;
-exports.empty = empty;
 /**
  * Common variables
  */
 var escapeQuoteRe = /\\"/g;
 var tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
-var supportsTemplate = 'content' in document.createElement('template');
 
 /**
  * Supplant the placeholders of a template
@@ -8278,32 +8278,40 @@ var supportsTemplate = 'content' in document.createElement('template');
  * @api private
  */
 function interpolate(tpl, values) {
-    return tpl.replace(escapeQuoteRe, '"').replace(tokenRe, function (all, key) {
+    return tpl.replace(tokenRe, function (all, key) {
         return values[key] || '';
     });
 }
 
 /**
- * Convert an HTML string into a document
- * fragment
+ * Get the template for an element
+ * held within the `:before` pseudo-
+ * element
  *
- * @param {String} html
- * @return {DocumentFragment}
+ * @param {String} tpl
+ * @param {Object} values
+ * @return {String}
  * @api private
  */
-function parseHTML(html) {
-    if (supportsTemplate) {
-        var template = document.createElement('template');
-        template.innerHTML = html;
-        return document.importNode(template.content, true);
-    }
-    var fragment = document.createDocumentFragment();
-    var div = document.createElement('div');
-    div.innerHTML = html;
-    while (div.firstChild) {
-        fragment.appendChild(div.firstChild);
-    }
-    return fragment;
+function getTemplate(el) {
+    var tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
+    return tpl.slice(1, -1).replace(escapeQuoteRe, '"');
+}
+
+/**
+ * Interpolate the template string with the
+ * elements data attributes and convert into
+ * DOM nodes
+ *
+ * @param {Element} el
+ * @param {String} tpl
+ * @return {Element}
+ * @api private
+ */
+function parseTemplate(el, tpl) {
+    var newElement = el.cloneNode();
+    newElement.innerHTML = interpolate(tpl, el.dataset);
+    return newElement;
 }
 
 /**
@@ -8320,18 +8328,6 @@ function startsWith(str, prefix) {
         return str.startsWith(prefix);
     }
     return str.indexOf(prefix, 0) === 0;
-}
-
-/**
- * Empty an element of all child nodes
- *
- * @param {Element} el
- * @api private
- */
-function empty(el) {
-    while (el.firstChild) {
-        el.removeChild(el.firstChild);
-    }
 }
 
 },{}],45:[function(require,module,exports){

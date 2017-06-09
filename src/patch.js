@@ -6,7 +6,7 @@
  * @param {Node} newNode
  * @api private
  */
-export function patch(node, newNode) {
+export default function patch(node, newNode) {
     if (node.nodeType !== newNode.nodeType || node.nodeName !== newNode.nodeName) {
         node.parentNode.replaceChild(newNode.cloneNode(true), node);
         return;

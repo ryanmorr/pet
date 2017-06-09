@@ -3,7 +3,6 @@
  */
 const escapeQuoteRe = /\\"/g;
 const tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
-const supportsTemplate = 'content' in document.createElement('template');
 
 /**
  * Supplant the placeholders of a template
@@ -15,33 +14,41 @@ const supportsTemplate = 'content' in document.createElement('template');
  * @return {String}
  * @api private
  */
-export function interpolate(tpl, values) {
-    return tpl.replace(escapeQuoteRe, '"').replace(tokenRe, (all, key) => {
+function interpolate(tpl, values) {
+    return tpl.replace(tokenRe, (all, key) => {
         return values[key] || '';
     });
 }
 
 /**
- * Convert an HTML string into a document
- * fragment
+ * Get the template for an element
+ * held within the `:before` pseudo-
+ * element
  *
- * @param {String} html
- * @return {DocumentFragment}
+ * @param {String} tpl
+ * @param {Object} values
+ * @return {String}
  * @api private
  */
-export function parseHTML(html) {
-    if (supportsTemplate) {
-        const template = document.createElement('template');
-        template.innerHTML = html;
-        return document.importNode(template.content, true);
-    }
-    const fragment = document.createDocumentFragment();
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    while (div.firstChild) {
-        fragment.appendChild(div.firstChild);
-    }
-    return fragment;
+export function getTemplate(el) {
+    const tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
+    return tpl.slice(1, -1).replace(escapeQuoteRe, '"');
+}
+
+/**
+ * Interpolate the template string with the
+ * elements data attributes and convert into
+ * DOM nodes
+ *
+ * @param {Element} el
+ * @param {String} tpl
+ * @return {Element}
+ * @api private
+ */
+export function parseTemplate(el, tpl) {
+    const newElement = el.cloneNode();
+    newElement.innerHTML = interpolate(tpl, el.dataset);
+    return newElement;
 }
 
 /**
@@ -58,16 +65,4 @@ export function startsWith(str, prefix) {
         return str.startsWith(prefix);
     }
     return str.indexOf(prefix, 0) === 0;
-}
-
-/**
- * Empty an element of all child nodes
- *
- * @param {Element} el
- * @api private
- */
-export function empty(el) {
-    while (el.firstChild) {
-        el.removeChild(el.firstChild);
-    }
 }

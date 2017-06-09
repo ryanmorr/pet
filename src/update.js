@@ -1,8 +1,8 @@
 /**
  * Import dependencies
  */
-import { patch } from './patch';
-import { interpolate, parseHTML } from './util';
+import patch from './patch';
+import { getTemplate, parseTemplate } from './util';
 
 /**
  * Schedule an animation frame to
@@ -15,12 +15,9 @@ export default function update(elements) {
     requestAnimationFrame(() => {
         for (let i = 0, len = elements.length; i < len; i++) {
             const el = elements[i];
-            const tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
+            const tpl = getTemplate(el);
             if (tpl) {
-                const frag = parseHTML(interpolate(tpl.slice(1, -1), el.dataset));
-                const newElement = el.cloneNode();
-                newElement.appendChild(frag);
-                patch(el, newElement);
+                patch(el, parseTemplate(el, tpl));
             }
         }
     });
