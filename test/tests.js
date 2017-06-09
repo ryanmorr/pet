@@ -8055,13 +8055,21 @@ Library.prototype.test = function(obj, type) {
 },{}],40:[function(require,module,exports){
 'use strict';
 
+var _update = require('./update');
+
+var _update2 = _interopRequireDefault(_update);
+
+var _util = require('./util');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /**
- * Common variables
+ * Resolve the supported `MutationObserver`
+ * implementation
  */
-var doc = window.document;
-var tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
-var escapeQuoteRe = /\\"/g;
-var supportsTemplate = 'content' in doc.createElement('template');
+/**
+ * Import dependencies
+ */
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 /**
@@ -8083,11 +8091,11 @@ function onChange(mutations) {
                 addElement(elements, mutation.addedNodes[n]);
             }
         }
-        if (mutation.attributeName != null && startsWith(mutation.attributeName, 'data-')) {
+        if (mutation.attributeName != null && (0, _util.startsWith)(mutation.attributeName, 'data-')) {
             addElement(elements, mutation.target);
         }
     }
-    update(elements);
+    (0, _update2.default)(elements);
 }
 
 /**
@@ -8110,6 +8118,48 @@ function addElement(elements, el) {
 }
 
 /**
+ * Create the mutation observer and start
+ * observing the document body for dynamically
+ * inserted elements and changed attributes
+ */
+var observer = new MutationObserver(onChange);
+observer.observe(document.body, {
+    childList: true,
+    attributes: true,
+    subtree: true
+});
+
+},{"./update":42,"./util":43}],41:[function(require,module,exports){
+'use strict';
+
+require('./observer');
+
+var _update = require('./update');
+
+var _update2 = _interopRequireDefault(_update);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Update the current `pet` elements currently
+ * in the DOM
+ */
+/**
+ * Import dependencies
+ */
+(0, _update2.default)(document.querySelectorAll('.pet'));
+
+},{"./observer":40,"./update":42}],42:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = update;
+
+var _util = require('./util');
+
+/**
  * Schedule an animation frame to
  * update each element in the array
  *
@@ -8119,29 +8169,37 @@ function addElement(elements, el) {
 function update(elements) {
     requestAnimationFrame(function () {
         for (var i = 0, len = elements.length; i < len; i++) {
-            updateElement(elements[i]);
+            var el = elements[i];
+            var tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
+            if (tpl) {
+                (0, _util.empty)(el);
+                var html = (0, _util.interpolate)(tpl.slice(1, -1), el.dataset);
+                var frag = (0, _util.parseHTML)(html);
+                el.appendChild(frag);
+            }
         }
     });
-}
+} /**
+   * Import dependencies
+   */
+module.exports = exports['default'];
 
+},{"./util":43}],43:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.interpolate = interpolate;
+exports.parseHTML = parseHTML;
+exports.startsWith = startsWith;
+exports.empty = empty;
 /**
- * Retrieve the template contained in the
- * `content` property of the `:before`
- * pseudo-element, interpolate the data
- * attributes and append to element
- *
- * @param {Element} el
- * @api private
+ * Common variables
  */
-function updateElement(el) {
-    var tpl = window.getComputedStyle(el, ':before').getPropertyValue('content').slice(1, -1);
-    if (tpl) {
-        empty(el);
-        var html = interpolate(tpl, el.dataset);
-        var frag = parseHTML(html);
-        el.appendChild(frag);
-    }
-}
+var escapeQuoteRe = /\\"/g;
+var tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
+var supportsTemplate = 'content' in document.createElement('template');
 
 /**
  * Supplant the placeholders of a template
@@ -8169,12 +8227,12 @@ function interpolate(tpl, values) {
  */
 function parseHTML(html) {
     if (supportsTemplate) {
-        var template = doc.createElement('template');
+        var template = document.createElement('template');
         template.innerHTML = html;
-        return doc.importNode(template.content, true);
+        return document.importNode(template.content, true);
     }
-    var fragment = doc.createDocumentFragment();
-    var div = doc.createElement('div');
+    var fragment = document.createDocumentFragment();
+    var div = document.createElement('div');
     div.innerHTML = html;
     while (div.firstChild) {
         fragment.appendChild(div.firstChild);
@@ -8210,25 +8268,7 @@ function empty(el) {
     }
 }
 
-/**
- * Create the mutation observer and start
- * observing the document body for dynamically
- * inserted elements and changed attributes
- */
-var observer = new MutationObserver(onChange);
-observer.observe(doc.body, {
-    childList: true,
-    attributes: true,
-    subtree: true
-});
-
-/**
- * Update the current `pet` elements currently
- * in the DOM
- */
-update(doc.querySelectorAll('.pet'));
-
-},{}],41:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 'use strict';
 
 var _chai = require('chai');
@@ -8300,4 +8340,4 @@ describe('pet', function () {
     });
 });
 
-},{"../../src/pet":40,"chai":4}]},{},[41]);
+},{"../../src/pet":41,"chai":4}]},{},[44]);
