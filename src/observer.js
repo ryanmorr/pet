@@ -2,7 +2,6 @@
  * Import dependencies
  */
 import update from './update';
-import { startsWith } from './util';
 
 /**
  * Resolve the supported `MutationObserver`
@@ -29,7 +28,7 @@ function onChange(mutations) {
                 addElement(elements, mutation.addedNodes[n]);
             }
         }
-        if (mutation.attributeName != null && startsWith(mutation.attributeName, 'data-')) {
+        if (mutation.attributeName != null && mutation.attributeName.slice(0, 5) === 'data-') {
             addElement(elements, mutation.target);
         }
     }

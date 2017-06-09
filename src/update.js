@@ -2,7 +2,46 @@
  * Import dependencies
  */
 import patch from './patch';
-import { getTemplate, parseTemplate } from './util';
+
+/**
+ * Common variables
+ */
+const escapeQuoteRe = /\\"/g;
+const tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
+
+/**
+ * Get the template for an element
+ * held within the `:before` pseudo-
+ * element
+ *
+ * @param {String} tpl
+ * @param {Object} values
+ * @return {String}
+ * @api private
+ */
+function getTemplate(el) {
+    return window.getComputedStyle(el, ':before')
+        .getPropertyValue('content')
+        .slice(1, -1)
+        .replace(escapeQuoteRe, '"');
+}
+
+/**
+ * Interpolate the template string with the
+ * elements data attributes and convert into
+ * DOM nodes
+ *
+ * @param {Element} el
+ * @param {String} tpl
+ * @return {Element}
+ * @api private
+ */
+function parseTemplate(el, tpl) {
+    const data = el.dataset;
+    const newElement = el.cloneNode();
+    newElement.innerHTML = tpl.replace(tokenRe, (all, key) => data[key] || '');
+    return newElement;
+}
 
 /**
  * Schedule an animation frame to

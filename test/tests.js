@@ -8059,16 +8059,11 @@ var _update = require('./update');
 
 var _update2 = _interopRequireDefault(_update);
 
-var _util = require('./util');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Resolve the supported `MutationObserver`
  * implementation
- */
-/**
- * Import dependencies
  */
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
@@ -8082,6 +8077,9 @@ var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
  * @param {Array} mutations
  * @api private
  */
+/**
+ * Import dependencies
+ */
 function onChange(mutations) {
     var elements = [];
     for (var i = 0, len = mutations.length; i < len; i++) {
@@ -8091,7 +8089,7 @@ function onChange(mutations) {
                 addElement(elements, mutation.addedNodes[n]);
             }
         }
-        if (mutation.attributeName != null && (0, _util.startsWith)(mutation.attributeName, 'data-')) {
+        if (mutation.attributeName != null && mutation.attributeName.slice(0, 5) === 'data-') {
             addElement(elements, mutation.target);
         }
     }
@@ -8129,7 +8127,7 @@ observer.observe(document.body, {
     subtree: true
 });
 
-},{"./update":43,"./util":44}],41:[function(require,module,exports){
+},{"./update":43}],41:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8225,46 +8223,15 @@ var _patch = require('./patch');
 
 var _patch2 = _interopRequireDefault(_patch);
 
-var _util = require('./util');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
- * Schedule an animation frame to
- * update each element in the array
- *
- * @param {Array} elements
- * @api private
- */
-/**
- * Import dependencies
- */
-function update(elements) {
-    requestAnimationFrame(function () {
-        for (var i = 0, len = elements.length; i < len; i++) {
-            var el = elements[i];
-            var tpl = (0, _util.getTemplate)(el);
-            if (tpl) {
-                (0, _patch2.default)(el, (0, _util.parseTemplate)(el, tpl));
-            }
-        }
-    });
-}
-module.exports = exports['default'];
-
-},{"./patch":41,"./util":44}],44:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getTemplate = getTemplate;
-exports.parseTemplate = parseTemplate;
-exports.startsWith = startsWith;
-/**
  * Common variables
  */
-var escapeQuoteRe = /\\"/g;
+var escapeQuoteRe = /\\"/g; /**
+                             * Import dependencies
+                             */
+
 var tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
 
 /**
@@ -8278,8 +8245,7 @@ var tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
  * @api private
  */
 function getTemplate(el) {
-  var tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
-  return tpl.slice(1, -1).replace(escapeQuoteRe, '"');
+    return window.getComputedStyle(el, ':before').getPropertyValue('content').slice(1, -1).replace(escapeQuoteRe, '"');
 }
 
 /**
@@ -8293,31 +8259,35 @@ function getTemplate(el) {
  * @api private
  */
 function parseTemplate(el, tpl) {
-  var data = el.dataset;
-  var newElement = el.cloneNode();
-  newElement.innerHTML = tpl.replace(tokenRe, function (all, key) {
-    return data[key] || '';
-  });
-  return newElement;
+    var data = el.dataset;
+    var newElement = el.cloneNode();
+    newElement.innerHTML = tpl.replace(tokenRe, function (all, key) {
+        return data[key] || '';
+    });
+    return newElement;
 }
 
 /**
- * Does the string start with the provided
- * prefix
+ * Schedule an animation frame to
+ * update each element in the array
  *
- * @param {String} str
- * @param {String} prefix
- * @return {Boolean}
+ * @param {Array} elements
  * @api private
  */
-function startsWith(str, prefix) {
-  if (str.startsWith) {
-    return str.startsWith(prefix);
-  }
-  return str.indexOf(prefix, 0) === 0;
+function update(elements) {
+    requestAnimationFrame(function () {
+        for (var i = 0, len = elements.length; i < len; i++) {
+            var el = elements[i];
+            var tpl = getTemplate(el);
+            if (tpl) {
+                (0, _patch2.default)(el, parseTemplate(el, tpl));
+            }
+        }
+    });
 }
+module.exports = exports['default'];
 
-},{}],45:[function(require,module,exports){
+},{"./patch":41}],44:[function(require,module,exports){
 'use strict';
 
 var _chai = require('chai');
@@ -8389,4 +8359,4 @@ describe('pet', function () {
     });
 });
 
-},{"../../src/pet":42,"chai":4}]},{},[45]);
+},{"../../src/pet":42,"chai":4}]},{},[44]);
