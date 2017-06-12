@@ -8089,7 +8089,7 @@ function onChange(mutations) {
                 addElement(elements, mutation.addedNodes[n]);
             }
         }
-        if (mutation.attributeName != null && mutation.attributeName.slice(0, 5) === 'data-') {
+        if (mutation.attributeName != null) {
             addElement(elements, mutation.target);
         }
     }
@@ -8276,15 +8276,17 @@ function parseTemplate(el, tpl) {
  * @api private
  */
 function update(elements) {
-    requestAnimationFrame(function () {
-        for (var i = 0, len = elements.length; i < len; i++) {
-            var el = elements[i];
-            var tpl = getTemplate(el);
-            if (tpl) {
-                (0, _patch2.default)(el, parseTemplate(el, tpl));
+    if (elements.length) {
+        requestAnimationFrame(function () {
+            for (var i = 0, len = elements.length; i < len; i++) {
+                var el = elements[i];
+                var tpl = getTemplate(el);
+                if (tpl) {
+                    (0, _patch2.default)(el, parseTemplate(el, tpl));
+                }
             }
-        }
-    });
+        });
+    }
 }
 module.exports = exports['default'];
 
@@ -8306,7 +8308,7 @@ function observe(el, config, fn) {
 }
 
 describe('pet', function () {
-    it('supports HTML injection on page load', function (done) {
+    it('should support HTML injection on page load', function (done) {
         var foo = document.querySelector('#foo');
         setTimeout(function () {
             var el = foo.firstChild;
@@ -8317,19 +8319,19 @@ describe('pet', function () {
         }, 100);
     });
 
-    it('supports HTML interpolation using data attributes', function (done) {
+    it('should support HTML interpolation using data attributes', function (done) {
         var bar = document.querySelector('#bar');
         setTimeout(function () {
             var el = bar.firstChild;
             (0, _chai.expect)(el).to.not.equal(null);
-            (0, _chai.expect)(el.tagName.toLowerCase()).to.equal('strong');
+            (0, _chai.expect)(el.tagName.toLowerCase()).to.equal('div');
             (0, _chai.expect)(el.id).to.equal('name');
             (0, _chai.expect)(el.textContent).to.equal('John Doe');
             done();
         }, 100);
     });
 
-    it('supports HTML injection on dynamically inserted elements', function (done) {
+    it('should support HTML injection on dynamically inserted elements', function (done) {
         var baz = document.createElement('div');
         baz.id = 'baz';
         baz.className = 'pet';
@@ -8344,12 +8346,12 @@ describe('pet', function () {
         document.body.appendChild(baz);
     });
 
-    it('supports DOM updates when data attributes are changed dynamically', function (done) {
+    it('should support DOM updates when data attributes are changed dynamically', function (done) {
         var bar = document.querySelector('#bar');
         observe(bar, { attributes: true }, function () {
             var el = bar.firstChild;
             (0, _chai.expect)(el).to.not.equal(null);
-            (0, _chai.expect)(el.tagName.toLowerCase()).to.equal('strong');
+            (0, _chai.expect)(el.tagName.toLowerCase()).to.equal('div');
             (0, _chai.expect)(el.id).to.equal('name2');
             (0, _chai.expect)(el.textContent).to.equal('Joe Blow');
             done();
@@ -8357,6 +8359,18 @@ describe('pet', function () {
         bar.dataset.id = 'name2';
         bar.dataset.firstName = 'Joe';
         bar.dataset.lastName = 'Blow';
+    });
+
+    it('should support DOM updates via CSS specificity', function (done) {
+        var foo = document.querySelector('#foo');
+        observe(foo, { attributes: true }, function () {
+            var el = foo.firstChild;
+            (0, _chai.expect)(el).to.not.equal(null);
+            (0, _chai.expect)(el.tagName.toLowerCase()).to.equal('strong');
+            (0, _chai.expect)(el.textContent).to.equal('FOO');
+            done();
+        });
+        foo.classList.add('active');
     });
 });
 

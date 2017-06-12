@@ -17,8 +17,12 @@
             content: '<em>foo</em>';
         }
 
+        #foo.active::before{
+            content: '<strong>FOO</strong>';
+        }
+
         #bar::before {
-            content: '<strong id="${id}">${firstName} ${lastName}</strong>';
+            content: '<div id="${id}">${firstName} ${lastName}</div>';
         }
 
         #baz::before {

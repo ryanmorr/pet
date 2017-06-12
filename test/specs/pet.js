@@ -12,7 +12,7 @@ function observe(el, config, fn) {
 }
 
 describe('pet', () => {
-    it('supports HTML injection on page load', (done) => {
+    it('should support HTML injection on page load', (done) => {
         const foo = document.querySelector('#foo');
         setTimeout(() => {
             const el = foo.firstChild;
@@ -23,19 +23,19 @@ describe('pet', () => {
         }, 100);
     });
 
-    it('supports HTML interpolation using data attributes', (done) => {
+    it('should support HTML interpolation using data attributes', (done) => {
         const bar = document.querySelector('#bar');
         setTimeout(() => {
             const el = bar.firstChild;
             expect(el).to.not.equal(null);
-            expect(el.tagName.toLowerCase()).to.equal('strong');
+            expect(el.tagName.toLowerCase()).to.equal('div');
             expect(el.id).to.equal('name');
             expect(el.textContent).to.equal('John Doe');
             done();
         }, 100);
     });
 
-    it('supports HTML injection on dynamically inserted elements', (done) => {
+    it('should support HTML injection on dynamically inserted elements', (done) => {
         const baz = document.createElement('div');
         baz.id = 'baz';
         baz.className = 'pet';
@@ -50,12 +50,12 @@ describe('pet', () => {
         document.body.appendChild(baz);
     });
 
-    it('supports DOM updates when data attributes are changed dynamically', (done) => {
+    it('should support DOM updates when data attributes are changed dynamically', (done) => {
         const bar = document.querySelector('#bar');
         observe(bar, {attributes: true}, () => {
             const el = bar.firstChild;
             expect(el).to.not.equal(null);
-            expect(el.tagName.toLowerCase()).to.equal('strong');
+            expect(el.tagName.toLowerCase()).to.equal('div');
             expect(el.id).to.equal('name2');
             expect(el.textContent).to.equal('Joe Blow');
             done();
@@ -63,5 +63,17 @@ describe('pet', () => {
         bar.dataset.id = 'name2';
         bar.dataset.firstName = 'Joe';
         bar.dataset.lastName = 'Blow';
+    });
+
+    it('should support DOM updates via CSS specificity', (done) => {
+        const foo = document.querySelector('#foo');
+        observe(foo, {attributes: true}, () => {
+            const el = foo.firstChild;
+            expect(el).to.not.equal(null);
+            expect(el.tagName.toLowerCase()).to.equal('strong');
+            expect(el.textContent).to.equal('FOO');
+            done();
+        });
+        foo.classList.add('active');
     });
 });

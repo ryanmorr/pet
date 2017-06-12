@@ -49,13 +49,15 @@ function parseTemplate(el, tpl) {
  * @api private
  */
 export default function update(elements) {
-    requestAnimationFrame(() => {
-        for (let i = 0, len = elements.length; i < len; i++) {
-            const el = elements[i];
-            const tpl = getTemplate(el);
-            if (tpl) {
-                patch(el, parseTemplate(el, tpl));
+    if (elements.length) {
+        requestAnimationFrame(() => {
+            for (let i = 0, len = elements.length; i < len; i++) {
+                const el = elements[i];
+                const tpl = getTemplate(el);
+                if (tpl) {
+                    patch(el, parseTemplate(el, tpl));
+                }
             }
-        }
-    });
+        });
+    }
 }

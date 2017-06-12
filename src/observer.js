@@ -28,7 +28,7 @@ function onChange(mutations) {
                 addElement(elements, mutation.addedNodes[n]);
             }
         }
-        if (mutation.attributeName != null && mutation.attributeName.slice(0, 5) === 'data-') {
+        if (mutation.attributeName != null) {
             addElement(elements, mutation.target);
         }
     }
