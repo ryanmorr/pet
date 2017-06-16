@@ -76,4 +76,15 @@ describe('pet', () => {
         });
         foo.classList.add('active');
     });
+
+    it('should dispatch a custom render event when a pseudo-element template is rendered', (done) => {
+        const baz = document.querySelector('#baz');
+        baz.addEventListener('render', (e) => {
+            expect(e.type).to.equal('render');
+            expect(e.target).to.equal(baz);
+            expect(baz.firstChild.textContent).to.equal('AAA');
+            done();
+        });
+        baz.dataset.title = 'AAA';
+    });
 });

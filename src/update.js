@@ -56,6 +56,10 @@ export default function update(elements) {
                 const tpl = getTemplate(el);
                 if (tpl) {
                     patch(el, parseTemplate(el, tpl));
+                    el.dispatchEvent(new CustomEvent('render', {
+                        bubbles: false,
+                        cancelable: false
+                    }));
                 }
             }
         });

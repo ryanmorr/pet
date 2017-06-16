@@ -8283,6 +8283,10 @@ function update(elements) {
                 var tpl = getTemplate(el);
                 if (tpl) {
                     (0, _patch2.default)(el, parseTemplate(el, tpl));
+                    el.dispatchEvent(new CustomEvent('render', {
+                        bubbles: false,
+                        cancelable: false
+                    }));
                 }
             }
         });
@@ -8371,6 +8375,17 @@ describe('pet', function () {
             done();
         });
         foo.classList.add('active');
+    });
+
+    it('should dispatch a custom render event when a pseudo-element template is rendered', function (done) {
+        var baz = document.querySelector('#baz');
+        baz.addEventListener('render', function (e) {
+            (0, _chai.expect)(e.type).to.equal('render');
+            (0, _chai.expect)(e.target).to.equal(baz);
+            (0, _chai.expect)(baz.firstChild.textContent).to.equal('AAA');
+            done();
+        });
+        baz.dataset.title = 'AAA';
     });
 });
 
