@@ -1,15 +1,5 @@
-/* eslint-disable max-len */
-
-import { expect } from 'chai';
+import { observe } from '../setup';
 import '../../src/pet';
-
-function observe(el, config, fn) {
-    const observer = new (window.MutationObserver || window.WebKitMutationObserver)(() => {
-        setTimeout(fn, 100);
-        observer.disconnect();
-    });
-    observer.observe(el, config);
-}
 
 describe('pet', () => {
     it('should support HTML injection on page load', (done) => {
