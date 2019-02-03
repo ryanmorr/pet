@@ -19,6 +19,10 @@ const css = `
     .qux::before {
         content: '<div class="{{class}}" pet></div>'
     }
+
+    .quux::before {
+        content: '<div>{{content}}</div>'
+    }
 `;
 
 // Append CSS templates to the DOM
@@ -31,6 +35,7 @@ document.body.innerHTML += `
     <div class="foo" pet></div>
     <div class="bar" data-id="name" data-first-name="John" data-last-name="Doe" pet></div>
     <div class="qux" pet data-class="foo"></div>
+    <div class="quux" pet data-content="foo"></div>
 `;
 
 // Observe changes to an element

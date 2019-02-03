@@ -71,6 +71,21 @@ describe('pet', () => {
         qux.dataset.class = 'foo active';
     });
 
+    it('should not unnecessarily remove elements when updating', (done) => {
+        const quux = document.querySelector('.quux');
+        const div = quux.firstChild;
+
+        expect(div.textContent).to.equal('foo');
+
+        observe(quux, {attributes: true}, () => {
+            expect(quux.firstChild).to.equal(div);
+            expect(div.textContent).to.equal('bar');
+            done();
+        });
+
+        quux.dataset.content = 'bar';
+    });
+
     it('should dispatch a custom render event when a pseudo-element template is rendered', (done) => {
         const baz = document.querySelector('.baz');
 
