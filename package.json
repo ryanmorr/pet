@@ -1,21 +1,20 @@
 {
-  "name": "pet",
+  "name": "@ryanmorr/pet",
   "description": "Pseudo-element templating",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "license": "Unlicense",
   "homepage": "https://github.com/ryanmorr/pet",
   "main": "dist/pet.min.js",
-  "author": {
-    "name": "Ryan Morr",
-    "email": "rm.morr@gmail.com",
-    "url": "http://ryanmorr.com"
-  },
+  "author": "Ryan Morr",
   "repository": {
     "type": "git",
     "url": "git://github.com/ryanmorr/pet.git"
   },
   "bugs": {
     "url": "https://github.com/ryanmorr/pet/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "devDependencies": {
     "@babel/core": "^7.0.1",
