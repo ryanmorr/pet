@@ -3,7 +3,7 @@ import '../../src/pet';
 
 describe('pet', () => {
     it('should support HTML injection on page load', (done) => {
-        const foo = document.querySelector('#foo');
+        const foo = document.querySelector('.foo');
         requestAnimationFrame(() => {
             const el = foo.firstChild;
             expect(el).to.not.equal(null);
@@ -14,7 +14,7 @@ describe('pet', () => {
     });
 
     it('should support HTML interpolation using data attributes', (done) => {
-        const bar = document.querySelector('#bar');
+        const bar = document.querySelector('.bar');
         requestAnimationFrame(() => {
             const el = bar.firstChild;
             expect(el).to.not.equal(null);
@@ -27,7 +27,7 @@ describe('pet', () => {
 
     it('should support HTML injection on dynamically inserted elements', (done) => {
         const baz = document.createElement('div');
-        baz.id = 'baz';
+        baz.className = 'baz';
         baz.setAttribute('pet', '');
         baz.dataset.title = 'Baz';
         observe(document.body, {childList: true}, () => {
@@ -41,7 +41,7 @@ describe('pet', () => {
     });
 
     it('should support DOM updates when data attributes are changed dynamically', (done) => {
-        const bar = document.querySelector('#bar');
+        const bar = document.querySelector('.bar');
         observe(bar, {attributes: true}, () => {
             const el = bar.firstChild;
             expect(el).to.not.equal(null);
@@ -56,7 +56,7 @@ describe('pet', () => {
     });
 
     it('should support DOM updates via CSS specificity', (done) => {
-        const foo = document.querySelector('#foo');
+        const foo = document.querySelector('.foo');
         observe(foo, {attributes: true}, () => {
             const el = foo.firstChild;
             expect(el).to.not.equal(null);
@@ -68,7 +68,7 @@ describe('pet', () => {
     });
 
     it('should dispatch a custom render event when a pseudo-element template is rendered', (done) => {
-        const baz = document.querySelector('#baz');
+        const baz = document.querySelector('.baz');
         baz.addEventListener('render', (e) => {
             expect(e.type).to.equal('render');
             expect(e.target).to.equal(baz);

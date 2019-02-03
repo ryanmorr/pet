@@ -1,19 +1,19 @@
 // Define template in CSS
 const css = `
-    #foo::before {
+    .foo::before {
         content: '<em>foo</em>';
     }
 
-    #foo.active::before {
+    .foo.active::before {
         content: '<strong>FOO</strong>';
     }
 
-    #bar::before {
+    .bar::before {
         content: '<div id="{{id}}">{{firstName}} {{lastName}}</div>';
     }
 
-    #baz::before {
-        content: '<i>{{title}}</i>';
+    .baz::before {
+        content: "<i>{{title}}</i>";
     }
 `;
 
@@ -24,8 +24,8 @@ document.head.appendChild(style);
 
 // Append example elements for templates
 document.body.innerHTML += `
-    <div id="foo" pet></div>
-    <div id="bar" data-id="name" data-first-name="John" data-last-name="Doe" pet></div>
+    <div class="foo" pet></div>
+    <div class="bar" data-id="name" data-first-name="John" data-last-name="Doe" pet></div>
 `;
 
 // Observe changes to an element
