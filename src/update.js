@@ -7,7 +7,7 @@ import patch from './patch';
  * Common variables
  */
 const escapeQuoteRe = /\\['"]/g;
-const tokenRe = /\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g;
+const tokenRe = /\{\{([^\\}]*(?:\\.[^\\}]*)*)\}\}/g;
 
 /**
  * Get the template for an element

@@ -1,13 +1,25 @@
 // Define template in CSS
-const css = [];
-css.push('#foo::before { content: "<em>foo</em>"; }');
-css.push('#foo.active::before { content: "<strong>FOO</strong>";}');
-css.push('#bar::before { content: "<div id=\'${id}\'>${firstName} ${lastName}</div>";}');
-css.push('#baz::before { content: "<i>${title}</i>";}');
+const css = `
+    #foo::before {
+        content: '<em>foo</em>';
+    }
+
+    #foo.active::before {
+        content: '<strong>FOO</strong>';
+    }
+
+    #bar::before {
+        content: '<div id="{{id}}">{{firstName}} {{lastName}}</div>';
+    }
+
+    #baz::before {
+        content: '<i>{{title}}</i>';
+    }
+`;
 
 // Append CSS templates to the DOM
 const style = document.createElement('style');
-style.appendChild(document.createTextNode(css.join('')));
+style.appendChild(document.createTextNode(css));
 document.head.appendChild(style);
 
 // Append example elements for templates
