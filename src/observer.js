@@ -4,12 +4,6 @@
 import update from './update';
 
 /**
- * Resolve the supported `MutationObserver`
- * implementation
- */
-const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-
-/**
  * Callback for the mutation observer,
  * collects any `pet` elements that have
  * been inserted into the DOM or had
