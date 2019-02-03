@@ -15,6 +15,10 @@ const css = `
     .baz::before {
         content: "<i>{{title}}</i>";
     }
+
+    .qux::before {
+        content: '<div class="{{class}}" pet></div>'
+    }
 `;
 
 // Append CSS templates to the DOM
@@ -26,6 +30,7 @@ document.head.appendChild(style);
 document.body.innerHTML += `
     <div class="foo" pet></div>
     <div class="bar" data-id="name" data-first-name="John" data-last-name="Doe" pet></div>
+    <div class="qux" pet data-class="foo"></div>
 `;
 
 // Observe changes to an element

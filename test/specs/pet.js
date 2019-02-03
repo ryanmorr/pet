@@ -58,6 +58,19 @@ describe('pet', () => {
         foo.classList.add('active');
     });
 
+    it('should support templates nested within templates', (done) => {
+        const qux = document.querySelector('.qux');
+
+        expect(qux.innerHTML).to.equal('<div class="foo" pet=""><em>foo</em></div>');
+
+        observe(qux, {attributes: true}, () => {
+            expect(qux.innerHTML).to.equal('<div class="foo active" pet=""><strong>FOO</strong></div>');
+            done();
+        });
+
+        qux.dataset.class = 'foo active';
+    });
+
     it('should dispatch a custom render event when a pseudo-element template is rendered', (done) => {
         const baz = document.querySelector('.baz');
 
