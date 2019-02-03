@@ -4,32 +4,6 @@
 import update from './update';
 
 /**
- * Callback for the mutation observer,
- * collects any `pet` elements that have
- * been inserted into the DOM or had
- * data attributes changed so that the
- * template can be rendered/updated
- *
- * @param {Array} mutations
- * @api private
- */
-function onChange(mutations) {
-    const elements = [];
-    for (let i = 0, len = mutations.length; i < len; i++) {
-        const mutation = mutations[i];
-        if (mutation.addedNodes != null) {
-            for (let n = 0, nLen = mutation.addedNodes.length; n < nLen; n++) {
-                addElement(elements, mutation.addedNodes[n]);
-            }
-        }
-        if (mutation.attributeName != null) {
-            addElement(elements, mutation.target);
-        }
-    }
-    update(elements);
-}
-
-/**
  * If the element is a `pet` element
  * then add to the array
  *
@@ -38,22 +12,41 @@ function onChange(mutations) {
  * @api private
  */
 function addElement(elements, el) {
-    if (el.nodeType === 1 && el.hasAttribute('pet') && elements.indexOf(el) === -1) {
+    if (el.nodeType === 1 && el.hasAttribute('pet') && !elements.includes(el)) {
         elements.push(el);
     }
     if (el.hasChildNodes()) {
-        for (let i = 0, children = el.children, len = children.length; i < len; i++) {
-            addElement(elements, children[i]);
+        for (const child of el.children) {
+            addElement(elements, child);
         }
     }
 }
 
 /**
+ * Collect any `pet` elements that have
+ * been inserted into the DOM or had
+ * data attributes changed so that the
+ * template can be rendered/updated
+ */
+const observer = new MutationObserver((mutations) => {
+    update(mutations.reduce((elements, mutation) => {
+        if (mutation.addedNodes != null) {
+            for (const node of mutation.addedNodes) {
+                addElement(elements, node);
+            }
+        }
+        if (mutation.attributeName != null) {
+            addElement(elements, mutation.target);
+        }
+        return elements;
+    }, []));
+});
+
+/**
  * Create the mutation observer and start
- * observing the document body for dynamically
+ * observing the document for dynamically
  * inserted elements and changed attributes
  */
-const observer = new MutationObserver(onChange);
 observer.observe(document.documentElement, {
     childList: true,
     attributes: true,

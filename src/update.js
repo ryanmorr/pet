@@ -51,8 +51,7 @@ function parseTemplate(el, tpl) {
 export default function update(elements) {
     if (elements.length) {
         requestAnimationFrame(() => {
-            for (let i = 0, len = elements.length; i < len; i++) {
-                const el = elements[i];
+            elements.forEach((el) => {
                 const tpl = getTemplate(el);
                 if (tpl) {
                     patch(el, parseTemplate(el, tpl));
@@ -61,7 +60,7 @@ export default function update(elements) {
                         cancelable: false
                     }));
                 }
-            }
+            });
         });
     }
 }
