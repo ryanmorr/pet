@@ -97,6 +97,39 @@ describe('pet', () => {
         quux.dataset.content = '<section></section>';
     });
 
+    it('should support DOM updates of multiple elements', (done) => {
+        const baz1 = document.createElement('div');
+        baz1.className = 'baz';
+        baz1.setAttribute('pet', '');
+
+        const baz2 = document.querySelector('div');
+        baz2.className = 'baz';
+        baz2.setAttribute('pet', '');
+
+        document.body.appendChild(baz1);
+        document.body.appendChild(baz2);
+
+        const baz1Spy = sinon.spy(() => {
+            expect(baz1.innerHTML).to.equal('<i>Hello World</i>');
+            if (baz2Spy.called) {
+                done();
+            }
+        });
+
+        const baz2Spy = sinon.spy(() => {
+            expect(baz2.innerHTML).to.equal('<i>Hello World 2</i>');
+            if (baz1Spy.called) {
+                done();
+            }
+        });
+
+        observe(baz1, {attributes: true}, baz1Spy);
+        observe(baz2, {attributes: true}, baz2Spy);
+
+        baz1.dataset.title = 'Hello World';
+        baz2.dataset.title = 'Hello World 2';
+    });
+
     it('should dispatch a custom render event when a pseudo-element template is rendered', (done) => {
         const baz = document.querySelector('.baz');
 
