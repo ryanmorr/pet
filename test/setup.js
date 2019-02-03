@@ -24,8 +24,8 @@ document.head.appendChild(style);
 
 // Append example elements for templates
 document.body.innerHTML += `
-    <div id="foo" class="pet"></div>
-    <div id="bar" class="pet" data-id="name" data-first-name="John" data-last-name="Doe"></div>
+    <div id="foo" pet></div>
+    <div id="bar" data-id="name" data-first-name="John" data-last-name="Doe" pet></div>
 `;
 
 // Observe changes to an element

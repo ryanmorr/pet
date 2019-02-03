@@ -4,31 +4,31 @@ import '../../src/pet';
 describe('pet', () => {
     it('should support HTML injection on page load', (done) => {
         const foo = document.querySelector('#foo');
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             const el = foo.firstChild;
             expect(el).to.not.equal(null);
             expect(el.tagName.toLowerCase()).to.equal('em');
             expect(el.textContent).to.equal('foo');
             done();
-        }, 100);
+        });
     });
 
     it('should support HTML interpolation using data attributes', (done) => {
         const bar = document.querySelector('#bar');
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             const el = bar.firstChild;
             expect(el).to.not.equal(null);
             expect(el.tagName.toLowerCase()).to.equal('div');
             expect(el.id).to.equal('name');
             expect(el.textContent).to.equal('John Doe');
             done();
-        }, 100);
+        });
     });
 
     it('should support HTML injection on dynamically inserted elements', (done) => {
         const baz = document.createElement('div');
         baz.id = 'baz';
-        baz.className = 'pet';
+        baz.setAttribute('pet', '');
         baz.dataset.title = 'Baz';
         observe(document.body, {childList: true}, () => {
             const el = baz.firstChild;

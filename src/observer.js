@@ -38,7 +38,7 @@ function onChange(mutations) {
  * @api private
  */
 function addElement(elements, el) {
-    if (el.nodeType === 1 && el.classList.contains('pet') && elements.indexOf(el) === -1) {
+    if (el.nodeType === 1 && el.hasAttribute('pet') && elements.indexOf(el) === -1) {
         elements.push(el);
     }
     if (el.hasChildNodes()) {

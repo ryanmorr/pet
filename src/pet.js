@@ -8,4 +8,4 @@ import update from './update';
  * Update the current `pet` elements currently
  * in the DOM
  */
-update(document.querySelectorAll('.pet'));
+update(document.querySelectorAll('[pet]'));
