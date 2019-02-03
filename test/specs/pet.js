@@ -86,6 +86,17 @@ describe('pet', () => {
         quux.dataset.content = 'bar';
     });
 
+    it('should support interpolation of HTML', (done) => {
+        const quux = document.querySelector('.quux');
+
+        observe(quux, {attributes: true}, () => {
+            expect(quux.innerHTML).to.equal('<div><section></section></div>');
+            done();
+        });
+
+        quux.dataset.content = '<section></section>';
+    });
+
     it('should dispatch a custom render event when a pseudo-element template is rendered', (done) => {
         const baz = document.querySelector('.baz');
 
