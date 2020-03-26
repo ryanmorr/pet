@@ -16,7 +16,7 @@ Download the [CJS](https://github.com/ryanmorr/pet/raw/master/dist/pet.cjs.js), 
 npm install @ryanmorr/pet
 ```
 
-## Configuration
+## Usage
 
 The beauty of pet is that it's a zero API library, meaning there are no functions to import, just the library itself:
 
