@@ -1,11 +1,3 @@
-/**
- * Patch a source node to match
- * another node
- *
- * @param {Node} node
- * @param {Node} newNode
- * @api private
- */
 export default function patch(node, newNode) {
     if (node.nodeType !== newNode.nodeType || node.nodeName !== newNode.nodeName) {
         node.parentNode.replaceChild(newNode.cloneNode(true), node);
