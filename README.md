@@ -10,7 +10,7 @@ A proof of concept, pet (pseudo-element templating) expands on the capabilities 
 
 ## Install
 
-Download the [development](http://github.com/ryanmorr/pet/raw/master/dist/pet.js) or [minified](http://github.com/ryanmorr/pet/raw/master/dist/pet.min.js) version, or install via NPM:
+Download the [CJS](https://github.com/ryanmorr/pet/raw/master/dist/pet.cjs.js), [ESM](https://github.com/ryanmorr/pet/raw/master/dist/pet.esm.js), [UMD](https://github.com/ryanmorr/pet/raw/master/dist/pet.umd.js) versions or install via NPM:
 
 ``` sh
 npm install @ryanmorr/pet
@@ -54,7 +54,7 @@ If you experience [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content
 
 ## Interpolation
 
-Interpolation is achieved through data attributes set on the pet element and double curly braces ({{ }}) serving as delimiters for tokens within the template. The token found between the delimiters reference the data attribute using the same [name conversion](https://developer.mozilla.org/en/docs/Web/API/HTMLElement/dataset#Name_conversion) as the `element.dataset` property in JavaScript. For example, an attribute of `data-foo-bar-baz-qux` would be referenced as `{{fooBarBazQux}}` within a template.
+Interpolation is achieved through data attributes set on the pet element and mustache-style double curly braces serving as delimiters for tokens within the template. The token found between the delimiters reference the data attribute using the same [name conversion](https://developer.mozilla.org/en/docs/Web/API/HTMLElement/dataset#Name_conversion) as the `element.dataset` property in JavaScript. For example, an attribute of `data-foo-bar-baz-qux` would be referenced as `{{fooBarBazQux}}` within a template.
 
 ```html
 <div class="component" data-first-name="John" data-last-name="Doe" pet></div>
@@ -90,11 +90,11 @@ Create micro templates easily for common patterns:
 
 ```css
 .phone::before {
-    content: '<span><i class="icon-phone"></i> ${number}</span>';
+    content: '<span><i class="icon-phone"></i> {{number}}</span>';
 }
 
 .email::before {
-    content: '<a href="mailto:${email}"><i class="icon-email"></i> ${email}</a>';
+    content: '<a href="mailto:{{email}}"><i class="icon-email"></i> {{email}}</a>';
 }
 ```
 
@@ -106,7 +106,7 @@ Alter a template based on class names and attributes:
 }
 
 .avatar[data-src]::before {
-    content: '<img src="${src}" />';
+    content: '<img src="{{src}}" />';
 }
 ```
 
