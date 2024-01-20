@@ -1,16 +1,14 @@
 # pet
 
 [![Version Badge][version-image]][project-url]
-[![Build Status][build-image]][build-url]
 [![License][license-image]][license-url]
+[![Build Status][build-image]][build-url]
 
 > Pseudo-element templating
 
-A proof of concept, pet (pseudo-element templating) expands on the capabilities of pseudo-elements by adding support for HTML and data attribute interpolation within the CSS content property.
-
 ## Install
 
-Download the [CJS](https://github.com/ryanmorr/pet/raw/master/dist/pet.cjs.js), [ESM](https://github.com/ryanmorr/pet/raw/master/dist/pet.esm.js), [UMD](https://github.com/ryanmorr/pet/raw/master/dist/pet.umd.js) versions or install via NPM:
+Download the [CJS](https://github.com/ryanmorr/pet/raw/master/dist/cjs/pet.js), [ESM](https://github.com/ryanmorr/pet/raw/master/dist/esm/pet.js), [UMD](https://github.com/ryanmorr/pet/raw/master/dist/umd/pet.js) versions or install via NPM:
 
 ``` sh
 npm install @ryanmorr/pet
@@ -18,13 +16,23 @@ npm install @ryanmorr/pet
 
 ## Usage
 
+Pseudo-element templating (pet for short) expands on the capabilities of pseudo-elements by adding support for HTML and data attribute interpolation within the CSS content property.
+
 The beauty of pet is that it's a zero API library, meaning there are no functions to import, just the library itself:
 
 ```javascript
 import from '@ryanmorr/pet';
 ```
 
-Signify an element as a pet element by adding the "pet" attribute. Then define its template within the `content` property of the `::before` pseudo-element:
+Then add the following to your CSS to ensure the pseudo-element templates are not displayed as plain text:
+
+```css
+[pet]::before {
+    display: none !important;
+}
+```
+
+To begin, indicate an element as a `pet` element by adding the "pet" attribute. Then define its template within the `content` property of the `::before` pseudo-element:
 
 ```html
 <div class="component" pet></div>
@@ -36,7 +44,7 @@ Signify an element as a pet element by adding the "pet" attribute. Then define i
 }
 ```
 
-Generates:
+This will generate the following HTML:
 
 ```html
 <div class="component" pet>
@@ -44,17 +52,7 @@ Generates:
 </div>
 ```
 
-If you experience [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content), try adding the following to your CSS to ensure the pseudo-element templates are not displayed as plain text:
-
-```css
-[pet]::before {
-    display: none !important;
-}
-```
-
-## Interpolation
-
-Interpolation is achieved through data attributes set on the pet element and mustache-style double curly braces serving as delimiters for tokens within the template. The token found between the delimiters reference the data attribute using the same [name conversion](https://developer.mozilla.org/en/docs/Web/API/HTMLElement/dataset#Name_conversion) as the `element.dataset` property in JavaScript. For example, an attribute of `data-foo-bar-baz-qux` would be referenced as `{{fooBarBazQux}}` within a template.
+Interpolation is achieved through data attributes set on the `pet` element and mustache-style double curly braces serving as delimiters for tokens within the template. The token found between the delimiters reference the data attribute using the same [name conversion](https://developer.mozilla.org/en/docs/Web/API/HTMLElement/dataset#Name_conversion) as the DOM element `dataset` property in JavaScript. For example, an attribute of `data-foo-bar-baz-qux` would be referenced as `fooBarBazQux` within a template:
 
 ```html
 <div class="component" data-first-name="John" data-last-name="Doe" pet></div>
@@ -66,7 +64,7 @@ Interpolation is achieved through data attributes set on the pet element and mus
 }
 ```
 
-Generates:
+This will generate the following HTML:
 
 ```html
 <div class="component" data-first-name="John" data-last-name="Doe" pet></div>
@@ -74,9 +72,7 @@ Generates:
 </div>
 ```
 
-Programmatically changing a data attribute will automatically patch the changes in the DOM in a performant manner.
-
-When a template is initially rendered, and every time a template is patched, a custom "render" event is dispatched on the pet element:
+Programmatically changing a data attribute will automatically patch the changes in the DOM. When a template is updated, a custom "render" event is dispatched on the `pet` element:
 
 ```javascript
 document.querySelector('.component').addEventListener('render', (e) => {
@@ -84,39 +80,13 @@ document.querySelector('.component').addEventListener('render', (e) => {
 });
 ```
 
-## Harness the Power of CSS
-
-Create micro templates easily for common patterns:
-
-```css
-.phone::before {
-    content: '<span><i class="icon-phone"></i> {{number}}</span>';
-}
-
-.email::before {
-    content: '<a href="mailto:{{email}}"><i class="icon-email"></i> {{email}}</a>';
-}
-```
-
-Alter a template based on class names and attributes:
-
-```css
-.avatar::before {
-    content: '<img src="default.jpg" />';
-}
-
-.avatar[data-src]::before {
-    content: '<img src="{{src}}" />';
-}
-```
-
 ## License
 
 This project is dedicated to the public domain as described by the [Unlicense](http://unlicense.org/).
 
 [project-url]: https://github.com/ryanmorr/pet
-[version-image]: https://badge.fury.io/gh/ryanmorr%2Fpet.svg
-[build-url]: https://travis-ci.org/ryanmorr/pet
-[build-image]: https://travis-ci.org/ryanmorr/pet.svg
-[license-image]: https://img.shields.io/badge/license-Unlicense-blue.svg
+[version-image]: https://img.shields.io/github/package-json/v/ryanmorr/pet?color=blue&style=flat-square
+[build-url]: https://github.com/ryanmorr/pet/actions
+[build-image]: https://img.shields.io/github/actions/workflow/status/ryanmorr/pet/node.js.yml?style=flat-square
+[license-image]: https://img.shields.io/github/license/ryanmorr/pet?color=blue&style=flat-square
 [license-url]: UNLICENSE
