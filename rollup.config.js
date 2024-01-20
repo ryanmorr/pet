@@ -9,11 +9,11 @@ export default async () => {
     const banner = `/*! ${pkg.name} v${pkg.version} | ${pkg.homepage} */`;
 
     return {
-        input: 'src/<insert-name>.js',
+        input: 'src/pet.js',
         output: [
             {
                 banner,
-                name: '<insert-name>',
+                name: 'pet',
                 file: pkg.browser,
                 format: 'umd'
             },
