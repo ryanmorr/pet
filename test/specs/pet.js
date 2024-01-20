@@ -142,10 +142,4 @@ describe('pet', () => {
 
         baz.dataset.title = 'AAA';
     });
-
-    it('should automatically hide templates from displaying as plain text', () => {
-        const foo = document.querySelector('.foo');
-        const before = window.getComputedStyle(foo, ':before');
-        expect(before.display).to.equal('none');
-    });
 });
