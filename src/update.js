@@ -1,10 +1,11 @@
+import scheduleRender from '@ryanmorr/schedule-render';
 import patch from './patch';
 
 const ESCAPE_QUOTE_RE = /\\['"]/g;
 const TOKEN_RE = /\{\{([^\\}]*(?:\\.[^\\}]*)*)\}\}/g;
 
 function getTemplate(el) {
-    const tpl = window.getComputedStyle(el, ':before').getPropertyValue('content');
+    const tpl = getComputedStyle(el, ':before').getPropertyValue('content');
     return tpl ? tpl.slice(1, -1).replace(ESCAPE_QUOTE_RE, '"') : null;
 }
 
@@ -17,7 +18,7 @@ function parseTemplate(el, tpl) {
 
 export default function update(elements) {
     if (elements.length) {
-        requestAnimationFrame(() => {
+        scheduleRender(() => {
             elements.forEach((el) => {
                 const tpl = getTemplate(el);
                 if (tpl) {
